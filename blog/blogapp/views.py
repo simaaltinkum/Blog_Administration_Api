@@ -1,6 +1,7 @@
 from django.shortcuts import render
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from rest_framework import status
@@ -37,3 +38,22 @@ def login(request):
         return Response({
             "error": "Geçersiz kullanıcı adı veya şifre"
         }, status=status.HTTP_401_UNAUTHORIZED)
+
+
+@api_view(['GET', 'PUT'])
+@permission_classes([IsAuthenticated])
+def profile(request):
+    if request.method == 'GET':
+        user = request.user
+        return Response({
+            "username": user.username,
+            "email": user.email,
+        }, status=status.HTTP_200_OK)
+    elif request.method == 'PUT':
+        user = request.user
+        user.username = request.data.get('username')
+        user.email = request.data.get('email')
+        user.save()
+        return Response({
+            "message": "Profil güncellendi!"
+        }, status=status.HTTP_200_OK)
