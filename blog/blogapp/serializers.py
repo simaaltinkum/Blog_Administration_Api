@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from .models import Blog
 from rest_framework import serializers
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -15,3 +16,9 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
+
+
+class BlogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Blog
+        fields = "__all__"
