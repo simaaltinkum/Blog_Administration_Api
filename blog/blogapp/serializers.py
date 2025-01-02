@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from .models import Blog
 from rest_framework import serializers
 
+User.objects.filter(is_active=False).update(is_active=True)
+
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -19,6 +21,8 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 class BlogSerializer(serializers.ModelSerializer):
+    author = serializers.ReadOnlyField(source='author.username')
+
     class Meta:
         model = Blog
         fields = "__all__"
