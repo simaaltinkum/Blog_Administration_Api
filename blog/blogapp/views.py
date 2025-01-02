@@ -5,6 +5,8 @@ from rest_framework.status import HTTP_200_OK
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from rest_framework import status
+
+from .models import Blog
 from .serializers import RegisterSerializer, BlogSerializer
 
 
@@ -69,7 +71,7 @@ class BlogView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
-        blog_posts = BlogSerializer.objects.all()
+        blog_posts = Blog.objects.all()
         serializer = BlogSerializer(blog_posts, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -88,24 +90,34 @@ class BlogDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
-        blog_post = BlogSerializer.objects.get(id=kwargs.get('id'))
-        serializer = BlogSerializer(blog_post)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            blog_post = Blog.objects.get(id=kwargs.get('id'))
+            serializer = BlogSerializer(blog_post)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Blog.DoesNotExist:
+            return Response({"error": "Blog yazısı bulunamadı"}, status=status.HTTP_404_NOT_FOUND)
 
     def put(self, request, *args, **kwargs):
-        blog_post = BlogSerializer.objects.get(id=kwargs.get('id'))
-        serializer = BlogSerializer(blog_post, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({
-                "message": "Blog yazısı güncellendi!",
-                "data": serializer.data
-            }, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            blog_post = Blog.objects.get(id=kwargs.get('id'))
+            serializer = BlogSerializer(blog_post, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({
+                    "message": "Blog yazısı güncellendi!",
+                    "data": serializer.data
+                }, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Blog.DoesNotExist:
+            return Response({"error": "Blog yazısı bulunamadı"}, status=status.HTTP_404_NOT_FOUND)
+
 
     def delete(self, request, *args, **kwargs):
-        blog_post = BlogSerializer.objects.get(id=kwargs.get('id'))
-        blog_post.delete()
-        return Response({
-            "message": "Blog yazısı silindi!"
-        }, status=status.HTTP_204_NO_CONTENT)
+        try:
+            blog_post = Blog.objects.get(id=kwargs.get('id'))
+            blog_post.delete()
+            return Response({
+                "message": "Blog yazısı silindi!"
+            }, status=status.HTTP_204_NO_CONTENT)
+        except Blog.DoesNotExist:
+            return Response({"error": "Blog yazısı bulunamadı"}, status=status.HTTP_404_NOT_FOUND)
