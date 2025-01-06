@@ -29,21 +29,21 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
     ],
 }
 
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=120),
-    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
-    'SLIDING_TOKEN_LIFETIME': timedelta(days=30),
-    'SLIDING_TOKEN_REFRESH_LIFETIME_LATE_USER': timedelta(days=1),
-    'SLIDING_TOKEN_LIFETIME_LATE_USER': timedelta(days=30),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=120),
+    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
+    "SLIDING_TOKEN_LIFETIME": timedelta(days=30),
+    "SLIDING_TOKEN_REFRESH_LIFETIME_LATE_USER": timedelta(days=1),
+    "SLIDING_TOKEN_LIFETIME_LATE_USER": timedelta(days=30),
 }
 
 
